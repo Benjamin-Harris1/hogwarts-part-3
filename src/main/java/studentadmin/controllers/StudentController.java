@@ -36,7 +36,7 @@ public class StudentController {
         return studentRepository.save(student);
     }
 
-    @PutMapping("/persons/{id}")
+    @PutMapping("/students/{id}")
     public ResponseEntity<Student> updateStudent(@PathVariable int id, @RequestBody Student student){
         Optional<Student> original = studentRepository.findById(id);
         if (original.isPresent()) {
