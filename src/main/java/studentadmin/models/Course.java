@@ -13,7 +13,7 @@ public class Course {
     private int schoolYear;
     private boolean current;
 
-    @ManyToOne
+    @OneToOne
     private Teacher teacher;
 
     @ManyToMany

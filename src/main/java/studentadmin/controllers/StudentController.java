@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/students")
 public class StudentController {
 
     private final StudentRepository studentRepository;
@@ -18,25 +19,26 @@ public class StudentController {
         this.studentRepository = studentRepository;
     }
 
-    @GetMapping("/students")
+
+    @GetMapping
     public List<Student> getAllStudents(){
         List<Student> students = studentRepository.findAll();
         return students;
     }
 
-    @GetMapping("/students/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Student> getStudent(@PathVariable int id){
         Optional<Student> student = studentRepository.findById(id);
         return ResponseEntity.of(student);
     }
 
-    @PostMapping("/students")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Student createStudent(@RequestBody Student student){
         return studentRepository.save(student);
     }
 
-    @PutMapping("/students/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Student> updateStudent(@PathVariable int id, @RequestBody Student student){
         Optional<Student> original = studentRepository.findById(id);
         if (original.isPresent()) {
@@ -59,7 +61,7 @@ public class StudentController {
         }
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity<Student> deleteStudent(@PathVariable int id){
         Optional<Student> student = studentRepository.findById(id);
         studentRepository.deleteById(id);

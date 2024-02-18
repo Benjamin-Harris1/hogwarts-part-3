@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/teachers")
 public class TeacherController {
 
     private final TeacherRepository teacherRepository;
@@ -19,25 +20,25 @@ public class TeacherController {
         this.teacherRepository = teacherRepository;
     }
 
-    @GetMapping("/teachers")
+    @GetMapping
     public List<Teacher> getAllTeachers(){
         List<Teacher> teachers = teacherRepository.findAll();
         return teachers;
     }
 
-    @GetMapping("/teachers/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Teacher> getTeacher(@PathVariable int id){
         Optional<Teacher> teacher = teacherRepository.findById(id);
         return ResponseEntity.of(teacher);
     }
 
-    @PostMapping("/teachers")
+    @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public Teacher createTeacher(@RequestBody Teacher teacher){
         return teacherRepository.save(teacher);
     }
 
-    @PutMapping("/teachers/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Teacher> updateStudent(@PathVariable int id, @RequestBody Teacher teacher){
         Optional<Teacher> original = teacherRepository.findById(id);
         if (original.isPresent()) {
@@ -60,7 +61,7 @@ public class TeacherController {
         }
     }
 
-    @DeleteMapping("/teachers/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Teacher> deleteTeacher(@PathVariable int id){
         Optional<Teacher> teacher = teacherRepository.findById(id);
         teacherRepository.deleteById(id);
