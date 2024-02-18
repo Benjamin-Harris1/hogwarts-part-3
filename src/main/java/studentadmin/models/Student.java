@@ -78,6 +78,14 @@ public class Student {
         this.dateOfBirth = dateOfBirth;
     }
 
+    public House getHouse() {
+        return house;
+    }
+
+    public void setHouse(House house) {
+        this.house = house;
+    }
+
     public boolean isPrefect() {
         return prefect;
     }

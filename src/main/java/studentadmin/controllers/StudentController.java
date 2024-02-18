@@ -48,6 +48,7 @@ public class StudentController {
             originalStudent.setMiddleName(student.getMiddleName());
             originalStudent.setLastName(student.getLastName());
             originalStudent.setDateOfBirth(student.getDateOfBirth());
+            originalStudent.setHouse(student.getHouse());
             originalStudent.setEnrollmentYear(student.getEnrollmentYear());
             originalStudent.setGraduationYear(student.getGraduationYear());
             originalStudent.setPrefect(student.isPrefect());

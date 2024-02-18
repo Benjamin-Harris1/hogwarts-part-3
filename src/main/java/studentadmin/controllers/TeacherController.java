@@ -39,7 +39,7 @@ public class TeacherController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Teacher> updateStudent(@PathVariable int id, @RequestBody Teacher teacher){
+    public ResponseEntity<Teacher> updateTeacher(@PathVariable int id, @RequestBody Teacher teacher){
         Optional<Teacher> original = teacherRepository.findById(id);
         if (original.isPresent()) {
             Teacher originalTeacher = original.get();
@@ -48,6 +48,7 @@ public class TeacherController {
             originalTeacher.setMiddleName(teacher.getMiddleName());
             originalTeacher.setLastName(teacher.getLastName());
             originalTeacher.setDateOfBirth(teacher.getDateOfBirth());
+            originalTeacher.setHouse(teacher.getHouse());
             originalTeacher.setHeadOfHouse(teacher.isHeadOfHouse());
             originalTeacher.setEmployment(teacher.getEmployment());
             originalTeacher.setEmploymentStart(teacher.getEmploymentStart());

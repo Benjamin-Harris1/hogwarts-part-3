@@ -1,4 +1,4 @@
-package studentadmin.repositories;
+package studentadmin;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -8,15 +8,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import studentadmin.models.*;
+import studentadmin.repositories.CourseRepository;
+import studentadmin.repositories.HouseRepository;
+import studentadmin.repositories.StudentRepository;
+import studentadmin.repositories.TeacherRepository;
 
 @Component
 public class InitData implements CommandLineRunner {
 
     @Autowired
-    private CourseRepository courseRepository;
-    private HouseRepository houseRepository;
-    private StudentRepository studentRepository;
-    private TeacherRepository teacherRepository;
+    private final CourseRepository courseRepository;
+    private final HouseRepository houseRepository;
+    private final StudentRepository studentRepository;
+    private final TeacherRepository teacherRepository;
 
     public InitData(CourseRepository courseRepository, HouseRepository houseRepository, StudentRepository studentRepository, TeacherRepository teacherRepository) {
         this.courseRepository = courseRepository;
