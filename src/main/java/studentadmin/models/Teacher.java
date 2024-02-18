@@ -1,9 +1,6 @@
 package studentadmin.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 
 import java.time.LocalDate;
@@ -17,11 +14,32 @@ public class Teacher {
     private String middleName;
     private String lastName;
     private LocalDate dateOfBirth;
-    //private House house;
+
+    @ManyToOne
+    private House house;
     private boolean headOfHouse;
+
+    // Sørger for at persiste i DB, og gemme som string
+    @Enumerated(EnumType.STRING)
     private EmpType employment;
     private LocalDate employmentStart;
     private LocalDate employmentEnd;
+
+    public Teacher(String firstName, String middleName, String lastName, LocalDate dateOfBirth, House house, boolean headOfHouse, EmpType employment, LocalDate employmentStart, LocalDate employmentEnd) {
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+        this.house = house;
+        this.headOfHouse = headOfHouse;
+        this.employment = employment;
+        this.employmentStart = employmentStart;
+        this.employmentEnd = employmentEnd;
+    }
+
+    public Teacher() {
+
+    }
 
     public int getId() {
         return id;

@@ -1,9 +1,6 @@
 package studentadmin.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
@@ -16,11 +13,30 @@ public class Student {
     private String middleName;
     private String lastName;
     private LocalDate dateOfBirth;
-    //private House house;
+
+    @ManyToOne
+    private House house;
     private boolean prefect;
-    private LocalDate enrollmentYear;
-    private LocalDate graduationYear;
+    private int enrollmentYear;
+    private int graduationYear;
     private boolean graduated;
+
+
+    public Student(String firstName, String middleName, String lastName, LocalDate dateOfBirth, House house, boolean prefect, int enrollmentYear, int graduationYear, boolean graduated) {
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+        this.house = house;
+        this.prefect = prefect;
+        this.enrollmentYear = enrollmentYear;
+        this.graduationYear = graduationYear;
+        this.graduated = graduated;
+    }
+
+    public Student() {
+
+    }
 
     public int getId() {
         return id;
@@ -70,19 +86,19 @@ public class Student {
         this.prefect = prefect;
     }
 
-    public LocalDate getEnrollmentYear() {
+    public int getEnrollmentYear() {
         return enrollmentYear;
     }
 
-    public void setEnrollmentYear(LocalDate enrollmentYear) {
+    public void setEnrollmentYear(int enrollmentYear) {
         this.enrollmentYear = enrollmentYear;
     }
 
-    public LocalDate getGraduationYear() {
+    public int getGraduationYear() {
         return graduationYear;
     }
 
-    public void setGraduationYear(LocalDate graduationYear) {
+    public void setGraduationYear(int graduationYear) {
         this.graduationYear = graduationYear;
     }
 

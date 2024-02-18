@@ -13,11 +13,23 @@ public class Course {
     private int schoolYear;
     private boolean current;
 
-    @OneToOne
+    @ManyToOne
     private Teacher teacher;
 
     @ManyToMany
     private List<Student> students;
+
+    public Course(String subject, int schoolYear, boolean current, Teacher teacher, List<Student> students) {
+        this.subject = subject;
+        this.schoolYear = schoolYear;
+        this.current = current;
+        this.teacher = teacher;
+        this.students = students;
+    }
+
+    public Course() {
+
+    }
 
     public int getId() {
         return id;
