@@ -1,0 +1,1 @@
+[![Build and deploy JAR app to Azure Web App - beha-hogwarts-application](https://github.com/Benjamin-Harris1/hogwarts-part-3/actions/workflows/master_beha-hogwarts-application.yml/badge.svg)](https://github.com/Benjamin-Harris1/hogwarts-part-3/actions/workflows/master_beha-hogwarts-application.yml)
