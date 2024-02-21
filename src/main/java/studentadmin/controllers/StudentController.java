@@ -3,6 +3,8 @@ package studentadmin.controllers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+
 import studentadmin.DTO.StudentDTO;
 import studentadmin.models.House;
 import studentadmin.models.Student;
@@ -12,12 +14,15 @@ import studentadmin.repositories.StudentRepository;
 import java.util.List;
 import java.util.Optional;
 
+
+
 @RestController
 @RequestMapping("/students")
 public class StudentController {
 
     private final StudentRepository studentRepository;
     private final HouseRepository houseRepository;
+
 
     public StudentController(StudentRepository studentRepository, HouseRepository houseRepository) {
         this.studentRepository = studentRepository;
@@ -90,6 +95,35 @@ public class StudentController {
             return ResponseEntity.notFound().build();
         }
     }
+
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Student> patchStudent(@PathVariable int id, @RequestBody Student student){
+        Optional<Student> original = studentRepository.findById(id);
+        if (!original.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+            Student originalStudent = original.get();
+            // Opdatér student
+            if (student.getGraduationYear() != 0) {
+                originalStudent.setGraduationYear(student.getGraduationYear());
+                // Sæt graduated til true hvis der angives graduationyear
+                originalStudent.setGraduated(true);
+            }
+            if (student.isPrefect()) {
+                originalStudent.setPrefect(student.isPrefect());
+            }
+            if (student.isGraduated()) {
+                originalStudent.setGraduated(student.isGraduated());
+            }
+            if (student.getSchoolYear() != 0) {
+                originalStudent.setSchoolYear(student.getSchoolYear());
+            }
+
+            // Gem og returner opdaterede student
+            Student updatedStudent = studentRepository.save(originalStudent);
+            return ResponseEntity.ok().body(updatedStudent);
+        } 
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Student> deleteStudent(@PathVariable int id){
