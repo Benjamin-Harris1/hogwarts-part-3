@@ -1,8 +1,10 @@
 package studentadmin.DTO;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 
 public class StudentDTO {
+    private String fullName;
     private String firstName;
     private String middleName;
     private String lastName;
@@ -12,6 +14,24 @@ public class StudentDTO {
     private int enrollmentYear;
     private int graduationYear;
     private boolean graduated;
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+        // split("\\s+"") opdeler streng ved 1 eller flere mellemrum
+        String[] parts = fullName.trim().split("\\s+");
+        this.firstName = parts[0];
+        this.lastName = parts[parts.length - 1];
+        if (parts.length > 2) {
+            // laver nyt array med evt flere mellemnavne og joiner det med firstname + lastname
+            this.middleName = String.join(" ", Arrays.copyOfRange(parts, 1, parts.length -1));
+        } else {
+            this.middleName = "";
+        }
+    }
 
     public String getFirstName() {
         return firstName;

@@ -44,6 +44,12 @@ public class StudentController {
         if (!house.isPresent()) {
             return ResponseEntity.notFound().build();
         }
+
+        // Tjekker om fullname er angivet og opdeler hvis ja
+        if (studentDTO.getFullName() != null) {
+            studentDTO.setFullName(studentDTO.getFullName());
+        }
+
         Student student = new Student();
         student.setFirstName(studentDTO.getFirstName());
         student.setMiddleName(studentDTO.getMiddleName());
