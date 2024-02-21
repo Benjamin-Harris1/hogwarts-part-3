@@ -83,6 +83,33 @@ public class TeacherController {
         }
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<Teacher> patchTeacher(@PathVariable int id, @RequestBody Teacher teacher){
+        Optional<Teacher> original = teacherRepository.findById(id);
+        if (!original.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+            Teacher originalTeacher = original.get();
+            // Opdatér teacher
+            if (teacher.isHeadOfHouse() != originalTeacher.isHeadOfHouse()) {
+                originalTeacher.setHeadOfHouse(teacher.isHeadOfHouse());
+            }
+
+            if (teacher.getEmployment() != null) {
+                originalTeacher.setEmployment(teacher.getEmployment());
+            }
+            if (teacher.getEmploymentEnd() != null) {
+                originalTeacher.setEmploymentEnd(teacher.getEmploymentEnd());
+            } else if (teacher.getEmploymentEnd() == null) {
+                originalTeacher.setEmploymentEnd(teacher.getEmploymentEnd());
+            }
+
+            // Gem og returner opdaterede teacher
+            Teacher updatedTeacher = teacherRepository.save(originalTeacher);
+            return ResponseEntity.ok().body(updatedTeacher);
+    }
+    
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Teacher> deleteTeacher(@PathVariable int id){
         Optional<Teacher> teacher = teacherRepository.findById(id);

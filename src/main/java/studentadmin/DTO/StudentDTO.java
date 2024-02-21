@@ -12,7 +12,7 @@ public class StudentDTO {
     private String house; // House name som streng
     private boolean prefect;
     private int enrollmentYear;
-    private int graduationYear;
+    private Integer graduationYear;
     private boolean graduated;
     private int schoolYear;
 
@@ -91,11 +91,11 @@ public class StudentDTO {
         this.enrollmentYear = enrollmentYear;
     }
 
-    public int getGraduationYear() {
+    public Integer getGraduationYear() {
         return graduationYear;
     }
 
-    public void setGraduationYear(int graduationYear) {
+    public void setGraduationYear(Integer graduationYear) {
         this.graduationYear = graduationYear;
     }
 

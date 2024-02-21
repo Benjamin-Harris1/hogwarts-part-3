@@ -22,12 +22,13 @@ public class Student {
     private House house;
     private boolean prefect;
     private int enrollmentYear;
-    private int graduationYear;
+    // Sat graduationYear som integer, så den også kan sættes som null via PATCH - ved ikke om det er god practice
+    private Integer graduationYear;
     private boolean graduated;
     private int schoolYear;
 
 
-    public Student(String firstName, String middleName, String lastName, LocalDate dateOfBirth, House house, boolean prefect, int enrollmentYear, int graduationYear, boolean graduated, int schoolYear) {
+    public Student(String firstName, String middleName, String lastName, LocalDate dateOfBirth, House house, boolean prefect, int enrollmentYear, Integer graduationYear, boolean graduated, int schoolYear) {
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
@@ -116,11 +117,11 @@ public class Student {
         this.enrollmentYear = enrollmentYear;
     }
 
-    public int getGraduationYear() {
+    public Integer getGraduationYear() {
         return graduationYear;
     }
 
-    public void setGraduationYear(int graduationYear) {
+    public void setGraduationYear(Integer graduationYear) {
         this.graduationYear = graduationYear;
     }
 

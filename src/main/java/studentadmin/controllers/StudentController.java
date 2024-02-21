@@ -105,16 +105,18 @@ public class StudentController {
         }
             Student originalStudent = original.get();
             // Opdatér student
-            if (student.getGraduationYear() != 0) {
+            if (student.isGraduated() != originalStudent.isGraduated()) {
+                originalStudent.setGraduated(student.isGraduated());
+            }
+            if (student.getGraduationYear() != null) {
                 originalStudent.setGraduationYear(student.getGraduationYear());
                 // Sæt graduated til true hvis der angives graduationyear
                 originalStudent.setGraduated(true);
+            } else if (student.getGraduationYear() == null) {
+                originalStudent.setGraduationYear(null);
             }
-            if (student.isPrefect()) {
+            if (student.isPrefect() != originalStudent.isPrefect()) {
                 originalStudent.setPrefect(student.isPrefect());
-            }
-            if (student.isGraduated()) {
-                originalStudent.setGraduated(student.isGraduated());
             }
             if (student.getSchoolYear() != 0) {
                 originalStudent.setSchoolYear(student.getSchoolYear());

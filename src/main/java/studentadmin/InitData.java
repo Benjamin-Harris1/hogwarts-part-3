@@ -46,7 +46,7 @@ public class InitData implements CommandLineRunner {
         teacherRepository.saveAll(List.of(mcgonagall, snape));
 
         // Opretter students
-        Student harry = new Student("Harry", "James", "Potter", LocalDate.parse("1980-07-31"), gryffindor, true, 1991, 1998, true, 1);
+        Student harry = new Student("Harry", "James", "Potter", LocalDate.parse("1980-07-31"), gryffindor, true, 1991, null, false, 1);
         Student hermione = new Student("Hermione", "Jean", "Granger", LocalDate.parse("1979-09-19"), gryffindor, false, 1991, 1998, true, 1);
         Student ron = new Student("Ronald", "Bilius", "Weasley", LocalDate.parse("1980-03-01"), gryffindor, false, 1991, 1998, true, 1);
         Student draco = new Student("Draco", "Lucius", "Malfoy", LocalDate.parse("1980-06-05"), slytherin, false, 1991, 1998, true, 1);
