@@ -1,54 +1,17 @@
-package studentadmin.models;
-
-import jakarta.persistence.*;
+package studentadmin.DTO;
 
 import java.time.LocalDate;
 
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-
-@Entity
-public class Student {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+public class StudentDTO {
     private String firstName;
     private String middleName;
     private String lastName;
     private LocalDate dateOfBirth;
-
-    @ManyToOne
-    @JsonIdentityReference(alwaysAsId = true)
-    @JoinColumn(name = "house")
-    private House house;
+    private String house; // House name som streng
     private boolean prefect;
     private int enrollmentYear;
     private int graduationYear;
     private boolean graduated;
-
-
-    public Student(String firstName, String middleName, String lastName, LocalDate dateOfBirth, House house, boolean prefect, int enrollmentYear, int graduationYear, boolean graduated) {
-        this.firstName = firstName;
-        this.middleName = middleName;
-        this.lastName = lastName;
-        this.dateOfBirth = dateOfBirth;
-        this.house = house;
-        this.prefect = prefect;
-        this.enrollmentYear = enrollmentYear;
-        this.graduationYear = graduationYear;
-        this.graduated = graduated;
-    }
-
-    public Student() {
-
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getFirstName() {
         return firstName;
@@ -82,11 +45,11 @@ public class Student {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public House getHouse() {
+    public String getHouse() {
         return house;
     }
 
-    public void setHouse(House house) {
+    public void setHouse(String house) {
         this.house = house;
     }
 

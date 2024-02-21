@@ -1,57 +1,19 @@
-package studentadmin.models;
+package studentadmin.DTO;
 
-import jakarta.persistence.*;
-
+import studentadmin.models.EmpType;
 
 import java.time.LocalDate;
 
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-
-@Entity
-public class Teacher {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+public class TeacherDTO {
     private String firstName;
     private String middleName;
     private String lastName;
     private LocalDate dateOfBirth;
-
-    @ManyToOne
-    @JsonIdentityReference(alwaysAsId = true)
-    @JoinColumn(name = "house")
-    private House house;
+    private String house;
     private boolean headOfHouse;
-
-    // Sørger for at persiste i DB, og gemme som string
-    @Enumerated(EnumType.STRING)
     private EmpType employment;
     private LocalDate employmentStart;
     private LocalDate employmentEnd;
-
-    public Teacher(String firstName, String middleName, String lastName, LocalDate dateOfBirth, House house, boolean headOfHouse, EmpType employment, LocalDate employmentStart, LocalDate employmentEnd) {
-        this.firstName = firstName;
-        this.middleName = middleName;
-        this.lastName = lastName;
-        this.dateOfBirth = dateOfBirth;
-        this.house = house;
-        this.headOfHouse = headOfHouse;
-        this.employment = employment;
-        this.employmentStart = employmentStart;
-        this.employmentEnd = employmentEnd;
-    }
-
-    public Teacher() {
-
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getFirstName() {
         return firstName;
@@ -85,11 +47,11 @@ public class Teacher {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public House getHouse() {
+    public String getHouse() {
         return house;
     }
 
-    public void setHouse(House house) {
+    public void setHouse(String house) {
         this.house = house;
     }
 

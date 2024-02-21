@@ -4,7 +4,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import studentadmin.DTO.TeacherDTO;
+import studentadmin.models.House;
 import studentadmin.models.Teacher;
+import studentadmin.repositories.HouseRepository;
 import studentadmin.repositories.TeacherRepository;
 
 import java.util.List;
@@ -15,9 +18,11 @@ import java.util.Optional;
 public class TeacherController {
 
     private final TeacherRepository teacherRepository;
+    private final HouseRepository houseRepository;
 
-    public TeacherController(TeacherRepository teacherRepository) {
+    public TeacherController(TeacherRepository teacherRepository, HouseRepository houseRepository) {
         this.teacherRepository = teacherRepository;
+        this.houseRepository = houseRepository;
     }
 
     @GetMapping
@@ -34,8 +39,24 @@ public class TeacherController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public Teacher createTeacher(@RequestBody Teacher teacher){
-        return teacherRepository.save(teacher);
+    public ResponseEntity<Teacher> createTeacher(@RequestBody TeacherDTO teacherDTO){
+        Optional<House> house = houseRepository.findByName(teacherDTO.getHouse());
+        if (!house.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        Teacher teacher = new Teacher();
+        teacher.setFirstName(teacherDTO.getFirstName());
+        teacher.setMiddleName(teacherDTO.getMiddleName());
+        teacher.setLastName(teacherDTO.getLastName());
+        teacher.setDateOfBirth(teacherDTO.getDateOfBirth());
+        teacher.setHouse(house.get());
+        teacher.setHeadOfHouse(teacherDTO.isHeadOfHouse());
+        teacher.setEmployment(teacherDTO.getEmployment());
+        teacher.setEmploymentStart(teacherDTO.getEmploymentStart());
+        teacher.setEmploymentEnd(teacherDTO.getEmploymentEnd());
+
+        Teacher savedTeacher = teacherRepository.save(teacher);
+        return ResponseEntity.ok().body(savedTeacher);
     }
 
     @PutMapping("/{id}")
