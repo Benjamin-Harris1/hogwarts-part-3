@@ -7,8 +7,6 @@ import java.util.List;
 @Entity
 public class House {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
     private String name;
     private String founder;
 
@@ -24,14 +22,6 @@ public class House {
 
     public House() {
 
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -54,7 +44,12 @@ public class House {
         return colors;
     }
 
+    // Sikrer at der kun kan forekomme PRÆCIST 2 color-værdier
     public void setColors(List<String> colors) {
-        this.colors = colors;
+        if (colors != null && colors.size() == 2) {
+            this.colors = colors;
+        } else {
+            throw new IllegalArgumentException("There needs to be exactly 2 colors");
+        }
     }
 }
