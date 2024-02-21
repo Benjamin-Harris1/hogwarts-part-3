@@ -14,6 +14,8 @@ public class StudentDTO {
     private int enrollmentYear;
     private int graduationYear;
     private boolean graduated;
+    private int schoolYear;
+
 
     public String getFullName() {
         return fullName;
@@ -103,5 +105,13 @@ public class StudentDTO {
 
     public void setGraduated(boolean graduated) {
         this.graduated = graduated;
+    }
+
+    public int getSchoolYear() {
+        return schoolYear;
+    }
+
+    public void setSchoolYear(int schoolYear) {
+        this.schoolYear = schoolYear;
     }
 }

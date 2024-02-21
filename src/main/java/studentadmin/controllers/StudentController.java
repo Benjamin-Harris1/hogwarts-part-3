@@ -60,6 +60,7 @@ public class StudentController {
         student.setEnrollmentYear(studentDTO.getEnrollmentYear());
         student.setGraduationYear(studentDTO.getGraduationYear());
         student.setGraduated(studentDTO.isGraduated());
+        student.setSchoolYear(studentDTO.getSchoolYear());
 
         Student savedStudent = studentRepository.save(student);
         return ResponseEntity.ok().body(savedStudent);
@@ -80,6 +81,7 @@ public class StudentController {
             originalStudent.setGraduationYear(student.getGraduationYear());
             originalStudent.setPrefect(student.isPrefect());
             originalStudent.setGraduated(student.isGraduated());
+            originalStudent.setSchoolYear(student.getSchoolYear());
 
             // Gem og returner opdaterede student
             Student updatedStudent = studentRepository.save(originalStudent);
