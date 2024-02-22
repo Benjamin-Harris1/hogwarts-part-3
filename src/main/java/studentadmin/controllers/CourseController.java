@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import studentadmin.DTO.AddStudentsDTO;
+import studentadmin.DTO.AddStudentsToCourseDTO;
 import studentadmin.DTO.UpdateCourseTeacherDTO;
 import studentadmin.models.Course;
 import studentadmin.models.Student;
@@ -76,7 +76,7 @@ public class CourseController {
     }
 
     @PostMapping("/{id}/students")
-    public ResponseEntity<Course> addStudentsToCourse(@PathVariable int id, @RequestBody AddStudentsDTO studentsDTO){
+    public ResponseEntity<Course> addStudentsToCourse(@PathVariable int id, @RequestBody AddStudentsToCourseDTO studentsDTO){
         Optional<Course> original = courseRepository.findById(id);
         if (!original.isPresent()){
             return ResponseEntity.notFound().build();
@@ -87,7 +87,7 @@ public class CourseController {
         List<Student> studentsToAdd = new ArrayList<>();
 
         // Looper over students og matcher enten ID eller name til en tilvsarende student i DB, og tilføjer til studentsToAdd array
-        for (AddStudentsDTO.StudentIdentifier studentIdentifier : studentsDTO.getStudents()) {
+        for (AddStudentsToCourseDTO.StudentIdentifier studentIdentifier : studentsDTO.getStudents()) {
             if (studentIdentifier.getId() > 0) {
                 studentRepository.findById(studentIdentifier.getId()).ifPresent(studentsToAdd::add);
             } else if (studentIdentifier.getName() != null) {

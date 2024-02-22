@@ -4,12 +4,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
+import studentadmin.DTO.PatchStudentDTO;
 import studentadmin.DTO.StudentDTO;
 import studentadmin.models.House;
 import studentadmin.models.Student;
 import studentadmin.repositories.HouseRepository;
 import studentadmin.repositories.StudentRepository;
+import studentadmin.utils.Patcher;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,11 +21,13 @@ import java.util.Optional;
 @RequestMapping("/students")
 public class StudentController {
 
+    private final Patcher patcher;
     private final StudentRepository studentRepository;
     private final HouseRepository houseRepository;
 
 
-    public StudentController(StudentRepository studentRepository, HouseRepository houseRepository) {
+    public StudentController(Patcher patcher, StudentRepository studentRepository, HouseRepository houseRepository) {
+        this.patcher = patcher;
         this.studentRepository = studentRepository;
         this.houseRepository = houseRepository;
     }
@@ -98,33 +101,35 @@ public class StudentController {
 
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Student> patchStudent(@PathVariable int id, @RequestBody Student student){
+    public ResponseEntity<Student> patchStudent(@PathVariable int id, @RequestBody PatchStudentDTO studentDTO){
         Optional<Student> original = studentRepository.findById(id);
         if (!original.isPresent()) {
             return ResponseEntity.notFound().build();
         }
-            Student originalStudent = original.get();
-            // Opdatér student
-            if (student.isGraduated() != originalStudent.isGraduated()) {
-                originalStudent.setGraduated(student.isGraduated());
-            }
-            if (student.getGraduationYear() != null) {
-                originalStudent.setGraduationYear(student.getGraduationYear());
-                // Sæt graduated til true hvis der angives graduationyear
-                originalStudent.setGraduated(true);
-            } else if (student.getGraduationYear() == null) {
-                originalStudent.setGraduationYear(null);
-            }
-            if (student.isPrefect() != originalStudent.isPrefect()) {
-                originalStudent.setPrefect(student.isPrefect());
-            }
-            if (student.getSchoolYear() != 0) {
-                originalStudent.setSchoolYear(student.getSchoolYear());
-            }
+            Student student = original.get();
+            
+            try {
+                // Send both obhect to the patcher 
+                patcher.patchObject(student, studentDTO);
 
-            // Gem og returner opdaterede student
-            Student updatedStudent = studentRepository.save(originalStudent);
-            return ResponseEntity.ok().body(updatedStudent);
+                // Tjekker om graduationYear er sat til null med vilje
+                if (studentDTO.getGraduationYear() == null && studentDTO.isGraduationYearUpdated()) {
+                    student.setGraduationYear(null);
+                    student.setGraduated(false);
+                }
+
+
+                // Tjekker om graduationYear er sat, og sætter graduated til true
+                if (studentDTO.getGraduationYear() != null) {
+                    student.setGraduated(true);
+                }
+                // Save updated existing student
+                studentRepository.save(student);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+            return ResponseEntity.ok().body(student);
         } 
 
     @DeleteMapping("/{id}")

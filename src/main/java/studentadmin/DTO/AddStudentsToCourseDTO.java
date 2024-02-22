@@ -2,7 +2,7 @@ package studentadmin.DTO;
 
 import java.util.List;
 
-public class AddStudentsDTO {
+public class AddStudentsToCourseDTO {
     private List<StudentIdentifier> students;
 
     public List<StudentIdentifier> getStudents() {
