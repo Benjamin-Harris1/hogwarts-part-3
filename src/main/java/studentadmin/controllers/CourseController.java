@@ -76,7 +76,7 @@ public class CourseController {
     }
 
     @PostMapping("/{id}/students")
-    public ResponseEntity<Course> addStudentsToCourse(@PathVariable int id, @RequestBody AddStudentsToCourseDTO studentsDTO){
+    public ResponseEntity<?> addStudentsToCourse(@PathVariable int id, @RequestBody AddStudentsToCourseDTO studentsDTO){
         Optional<Course> original = courseRepository.findById(id);
         if (!original.isPresent()){
             return ResponseEntity.notFound().build();
@@ -85,25 +85,48 @@ public class CourseController {
         Course course = original.get();
         // Opretter nyt array som fundne students bliver tilføjet til
         List<Student> studentsToAdd = new ArrayList<>();
+        List<String> errorMessages = new ArrayList<>();
 
         // Looper over students og matcher enten ID eller name til en tilvsarende student i DB, og tilføjer til studentsToAdd array
         for (AddStudentsToCourseDTO.StudentIdentifier studentIdentifier : studentsDTO.getStudents()) {
             if (studentIdentifier.getId() > 0) {
-                studentRepository.findById(studentIdentifier.getId()).ifPresent(studentsToAdd::add);
+                studentRepository.findById(studentIdentifier.getId()).ifPresent(student -> {
+                    if (student.getSchoolYear() == course.getSchoolYear()){
+                        // Tjek for duplikater
+                        boolean isAlreadyAdded = course.getStudents().contains(student);
+                        if (!isAlreadyAdded){
+                            studentsToAdd.add(student);
+                        } else {
+                            errorMessages.add("Student with ID " + student.getId() + " is already on the course!");
+                        }
+                    } else {
+                        errorMessages.add("Student with ID " + student.getId() + " does not have the same school year as the course");
+                    }
+                });
             } else if (studentIdentifier.getName() != null) {
                 List<Student> foundStudents = studentService.findStudentsByName(studentIdentifier.getName());
-                if (!foundStudents.isEmpty()) {
-                    studentsToAdd.addAll(foundStudents);
+                for (Student student : foundStudents) {
+                    if (student.getSchoolYear() == course.getSchoolYear()) {
+                        boolean isAlreadyAdded = course.getStudents().contains(student);
+                        if (!isAlreadyAdded){
+                            studentsToAdd.add(student);
+                        } else {
+                            errorMessages.add("Student with name " + student.getFirstName() + " " + student.getLastName() + " is already on the course!");
+                        }
+                    } else {
+                        errorMessages.add("Student with name " + student.getFirstName() + " " + student.getLastName() + " does not have the same school year as the course");
+                    }
                 }
             }
         }
         if (!studentsToAdd.isEmpty()) {
             course.getStudents().addAll(studentsToAdd);
             courseRepository.save(course);
-            return ResponseEntity.ok(course);
-        } else {
-            return ResponseEntity.notFound().build();
+        } 
+        if (!errorMessages.isEmpty()){
+            return ResponseEntity.badRequest().body(errorMessages);
         }
+        return ResponseEntity.ok(course);
     }
 
 
