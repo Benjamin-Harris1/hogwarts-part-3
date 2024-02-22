@@ -4,11 +4,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import studentadmin.DTO.PatchTeacherDTO;
 import studentadmin.DTO.TeacherDTO;
 import studentadmin.models.House;
 import studentadmin.models.Teacher;
 import studentadmin.repositories.HouseRepository;
 import studentadmin.repositories.TeacherRepository;
+import studentadmin.utils.Patcher;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,10 +19,12 @@ import java.util.Optional;
 @RequestMapping("/teachers")
 public class TeacherController {
 
+    private final Patcher patcher;
     private final TeacherRepository teacherRepository;
     private final HouseRepository houseRepository;
 
-    public TeacherController(TeacherRepository teacherRepository, HouseRepository houseRepository) {
+    public TeacherController(Patcher patcher, TeacherRepository teacherRepository, HouseRepository houseRepository) {
+        this.patcher = patcher;
         this.teacherRepository = teacherRepository;
         this.houseRepository = houseRepository;
     }
@@ -84,29 +88,28 @@ public class TeacherController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Teacher> patchTeacher(@PathVariable int id, @RequestBody Teacher teacher){
-        Optional<Teacher> original = teacherRepository.findById(id);
-        if (!original.isPresent()) {
+    public ResponseEntity<Teacher> patchTeacher(@PathVariable int id, @RequestBody PatchTeacherDTO teacherDTO){
+        Optional<Teacher> originalOpt = teacherRepository.findById(id);
+        if (!originalOpt.isPresent()) {
             return ResponseEntity.notFound().build();
         }
-            Teacher originalTeacher = original.get();
-            // Opdatér teacher
-            if (teacher.isHeadOfHouse() != originalTeacher.isHeadOfHouse()) {
-                originalTeacher.setHeadOfHouse(teacher.isHeadOfHouse());
+        Teacher originalTeacher = originalOpt.get();
+        
+        try {
+            // Sender begge objekter til patcher
+            patcher.patchObject(originalTeacher, teacherDTO);
+
+            // Tjekker om employmentEnd er sat til null med vijle
+            if (teacherDTO.getEmploymentEnd() == null && teacherDTO.isEmploymentEndUpdated()) {
+                originalTeacher.setEmploymentEnd(null);
             }
 
-            if (teacher.getEmployment() != null) {
-                originalTeacher.setEmployment(teacher.getEmployment());
-            }
-            if (teacher.getEmploymentEnd() != null) {
-                originalTeacher.setEmploymentEnd(teacher.getEmploymentEnd());
-            } else if (teacher.getEmploymentEnd() == null) {
-                originalTeacher.setEmploymentEnd(teacher.getEmploymentEnd());
-            }
-
-            // Gem og returner opdaterede teacher
-            Teacher updatedTeacher = teacherRepository.save(originalTeacher);
-            return ResponseEntity.ok().body(updatedTeacher);
+            teacherRepository.save(originalTeacher);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+        return ResponseEntity.ok(originalTeacher);
     }
     
 
