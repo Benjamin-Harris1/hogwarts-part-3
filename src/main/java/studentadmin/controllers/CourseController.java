@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import studentadmin.DTO.AddStudentsDTO;
+import studentadmin.DTO.UpdateCourseTeacherDTO;
 import studentadmin.models.Course;
 import studentadmin.models.Student;
 import studentadmin.models.Teacher;
@@ -80,7 +81,9 @@ public class CourseController {
         if (!original.isPresent()){
             return ResponseEntity.notFound().build();
         }
+        // Henter course
         Course course = original.get();
+        // Opretter nyt array som fundne students bliver tilføjet til
         List<Student> studentsToAdd = new ArrayList<>();
 
         // Looper over students og matcher enten ID eller name til en tilvsarende student i DB, og tilføjer til studentsToAdd array
@@ -124,17 +127,25 @@ public class CourseController {
         }
     }
 
-    @PutMapping("/{id}/teacher")
-    public ResponseEntity<Course> updateCourseTeacher(@PathVariable int id, @RequestBody Teacher teacher){
+    @PatchMapping("/{id}/teacher")
+    public ResponseEntity<Course> updateCourseTeacher(@PathVariable int id, @RequestBody UpdateCourseTeacherDTO teacherDTO){
         Optional<Course> original = courseRepository.findById(id);
-        if (original.isPresent()){
-            Course course = original.get();
-            course.setTeacher(teacher);
-            courseRepository.save(course);
-            return ResponseEntity.ok(course);
-        } else {
+        if (!original.isPresent()){
             return ResponseEntity.notFound().build();
         }
+        Course course = original.get();
+
+        if (teacherDTO.getTeacherId() == null){
+            course.setTeacher(null);
+        } else {
+            Optional<Teacher> teacher = teacherRepository.findById(teacherDTO.getTeacherId());
+            if (!teacher.isPresent()){
+                return ResponseEntity.notFound().build();
+            }
+            course.setTeacher(teacher.get());
+        }
+        courseRepository.save(course);
+        return ResponseEntity.ok(course);
     }
 
     @DeleteMapping("/{id}")
