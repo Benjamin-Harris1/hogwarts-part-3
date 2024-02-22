@@ -3,13 +3,17 @@ package studentadmin.controllers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import studentadmin.DTO.AddStudentsDTO;
 import studentadmin.models.Course;
 import studentadmin.models.Student;
 import studentadmin.models.Teacher;
 import studentadmin.repositories.CourseRepository;
 import studentadmin.repositories.StudentRepository;
 import studentadmin.repositories.TeacherRepository;
+import studentadmin.services.StudentService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,11 +23,13 @@ public class CourseController {
     private final CourseRepository courseRepository;
     private final StudentRepository studentRepository;
     private final TeacherRepository teacherRepository;
+    private final StudentService studentService;
 
-    public CourseController(CourseRepository courseRepository, StudentRepository studentRepository, TeacherRepository teacherRepository) {
+    public CourseController(CourseRepository courseRepository, StudentRepository studentRepository, TeacherRepository teacherRepository, StudentService studentService) {
         this.courseRepository = courseRepository;
         this.studentRepository = studentRepository;
         this.teacherRepository = teacherRepository;
+        this.studentService = studentService;
     }
 
     @GetMapping
@@ -68,6 +74,36 @@ public class CourseController {
         return courseRepository.save(course);
     }
 
+    @PostMapping("/{id}/students")
+    public ResponseEntity<Course> addStudentsToCourse(@PathVariable int id, @RequestBody AddStudentsDTO studentsDTO){
+        Optional<Course> original = courseRepository.findById(id);
+        if (!original.isPresent()){
+            return ResponseEntity.notFound().build();
+        }
+        Course course = original.get();
+        List<Student> studentsToAdd = new ArrayList<>();
+
+        // Looper over students og matcher enten ID eller name til en tilvsarende student i DB, og tilføjer til studentsToAdd array
+        for (AddStudentsDTO.StudentIdentifier studentIdentifier : studentsDTO.getStudents()) {
+            if (studentIdentifier.getId() > 0) {
+                studentRepository.findById(studentIdentifier.getId()).ifPresent(studentsToAdd::add);
+            } else if (studentIdentifier.getName() != null) {
+                List<Student> foundStudents = studentService.findStudentsByName(studentIdentifier.getName());
+                if (!foundStudents.isEmpty()) {
+                    studentsToAdd.addAll(foundStudents);
+                }
+            }
+        }
+        if (!studentsToAdd.isEmpty()) {
+            course.getStudents().addAll(studentsToAdd);
+            courseRepository.save(course);
+            return ResponseEntity.ok(course);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
     @PutMapping("/{id}")
     public ResponseEntity<Course> updateCourse(@PathVariable int id, @RequestBody Course course){
         Optional<Course> original = courseRepository.findById(id);
@@ -94,21 +130,6 @@ public class CourseController {
         if (original.isPresent()){
             Course course = original.get();
             course.setTeacher(teacher);
-            courseRepository.save(course);
-            return ResponseEntity.ok(course);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @PutMapping("/{id}/students/{studentId}")
-    public ResponseEntity<Course> addStudentToCourse(@PathVariable int id, @PathVariable int studentId){
-        Optional<Course> original = courseRepository.findById(id);
-        Optional<Student> originalStudent = studentRepository.findById(studentId);
-        if (original.isPresent() && originalStudent.isPresent()) {
-            Course course = original.get();
-            Student student = originalStudent.get();
-            course.getStudents().add(student);
             courseRepository.save(course);
             return ResponseEntity.ok(course);
         } else {
