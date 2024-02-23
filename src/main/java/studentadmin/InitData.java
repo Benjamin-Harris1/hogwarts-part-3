@@ -47,25 +47,25 @@ public class InitData implements CommandLineRunner {
 
         // Opretter students
         Student harry = new Student("Harry", "James", "Potter", LocalDate.parse("1980-07-31"), gryffindor, true, 1991, null, false, 1991);
-        Student hermione = new Student("Hermione", "Jean", "Granger", LocalDate.parse("1979-09-19"), gryffindor, false, 1991, 1998, true, 1);
-        Student ron = new Student("Ronald", "Bilius", "Weasley", LocalDate.parse("1980-03-01"), gryffindor, false, 1991, 1998, true, 1);
-        Student draco = new Student("Draco", "Lucius", "Malfoy", LocalDate.parse("1980-06-05"), slytherin, false, 1991, 1998, true, 1);
-        Student luna = new Student("Luna", "", "Lovegood", LocalDate.parse("1981-02-13"), ravenclaw, false, 1992, 1999, true, 1);
-        Student neville = new Student("Neville", "", "Longbottom", LocalDate.parse("1980-07-30"), gryffindor, false, 1991, 1998, true, 1);
-        Student ginny = new Student("Ginny", "", "Weasley", LocalDate.parse("1981-08-11"), gryffindor, false, 1992, 1999, true, 1);
-        Student fred = new Student("Fred", "", "Weasley", LocalDate.parse("1978-04-01"), gryffindor, false, 1989, 1996, true, 1);
-        Student george = new Student("George", "", "Weasley", LocalDate.parse("1978-04-01"), gryffindor, false, 1989, 1996, true, 1);
-        Student cedric = new Student("Cedric", "", "Diggory", LocalDate.parse("1977-09-01"), hufflepuff, true, 1989, 1995, false, 1);
-        Student cho = new Student("Cho", "", "Chang", LocalDate.parse("1979-01-01"), ravenclaw, false, 1990, 1997, true, 1);
-        Student seamus = new Student("Seamus", "", "Finnigan", LocalDate.parse("1980-01-01"), gryffindor, false, 1991, 1998, true, 1);
-        Student dean = new Student("Dean", "", "Thomas", LocalDate.parse("1980-01-01"), gryffindor, false, 1991, 1998, true, 1);
-        Student padma = new Student("Padma", "", "Patil", LocalDate.parse("1979-01-01"), ravenclaw, false, 1991, 1998, true, 1);
-        Student parvati = new Student("Parvati", "", "Patil", LocalDate.parse("1979-01-01"), gryffindor, false, 1991, 1998, true, 1);
+        Student hermione = new Student("Hermione", "Jean", "Granger", LocalDate.parse("1979-09-19"), gryffindor, false, 1991, 1998, true, 1991);
+        Student ron = new Student("Ronald", "Bilius", "Weasley", LocalDate.parse("1980-03-01"), gryffindor, false, 1991, 1998, true, 1991);
+        Student draco = new Student("Draco", "Lucius", "Malfoy", LocalDate.parse("1980-06-05"), slytherin, false, 1991, 1998, true, 1991);
+        Student luna = new Student("Luna", "", "Lovegood", LocalDate.parse("1981-02-13"), ravenclaw, false, 1992, 1999, true, 1992);
+        Student neville = new Student("Neville", "", "Longbottom", LocalDate.parse("1980-07-30"), gryffindor, false, 1991, 1998, true, 1991);
+        Student ginny = new Student("Ginny", "", "Weasley", LocalDate.parse("1981-08-11"), gryffindor, false, 1992, 1999, true, 1992);
+        Student fred = new Student("Fred", "", "Weasley", LocalDate.parse("1978-04-01"), gryffindor, false, 1989, 1996, true, 1989);
+        Student george = new Student("George", "", "Weasley", LocalDate.parse("1978-04-01"), gryffindor, false, 1989, 1996, true, 1989);
+        Student cedric = new Student("Cedric", "", "Diggory", LocalDate.parse("1977-09-01"), hufflepuff, true, 1989, 1995, false, 1989);
+        Student cho = new Student("Cho", "", "Chang", LocalDate.parse("1979-01-01"), ravenclaw, false, 1990, 1997, true, 1990);
+        Student seamus = new Student("Seamus", "", "Finnigan", LocalDate.parse("1980-01-01"), gryffindor, false, 1991, 1998, true, 1991);
+        Student dean = new Student("Dean", "", "Thomas", LocalDate.parse("1980-01-01"), gryffindor, false, 1991, 1998, true, 1991);
+        Student padma = new Student("Padma", "", "Patil", LocalDate.parse("1979-01-01"), ravenclaw, false, 1991, 1998, true, 1991);
+        Student parvati = new Student("Parvati", "", "Patil", LocalDate.parse("1979-01-01"), gryffindor, false, 1991, 1998, true, 1991);
         studentRepository.saveAll(List.of(harry, hermione, ron, draco, luna, neville, ginny, fred, george, cedric, cho, seamus, dean, padma, parvati));
 
         // Opretter course
         Course transfiguration = new Course("Transfiguration", 1991, true, mcgonagall, null);
-        transfiguration.setStudents(List.of(harry, hermione, ron, draco, luna, neville, ginny, fred, george, cedric, cho, seamus, dean, padma, parvati));
+        transfiguration.setStudents(List.of(harry, hermione, ron, draco, neville, seamus, dean, padma, parvati));
         courseRepository.saveAll(List.of(transfiguration));
 
     }
