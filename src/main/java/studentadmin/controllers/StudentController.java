@@ -1,5 +1,6 @@
 package studentadmin.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -52,6 +53,7 @@ public class StudentController {
 
 
     @PatchMapping("/{id}")
+    @Operation(description = "all attributes can be changed independently. If you mistakenly set a graduationYear, you can set it to null, by adding graduationYear: null followed by graduationYearUpdated: true")
     public ResponseEntity<StudentResponseDTO> patchStudent(@PathVariable int id, @RequestBody StudentPatchRequest studentDTO){
         return ResponseEntity.of(studentService.patchStudent(id, studentDTO));
         } 

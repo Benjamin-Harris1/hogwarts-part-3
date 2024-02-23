@@ -1,5 +1,6 @@
 package studentadmin.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,6 +48,7 @@ public class CourseController {
     }
 
     @PostMapping
+    @Operation(description = "Can be posted with just subject, schoolYear and current. Teacher and students can be added later via post and patch.")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Course> createCourse(@RequestBody Course course){
         return courseService.createCourse(course);
