@@ -1,5 +1,6 @@
 package studentadmin.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,6 +48,7 @@ public class TeacherController {
     }
 
     @PatchMapping("/{id}")
+    @Operation(description = "all attributes can be changed independently. If you mistakenly set an employmentEnd date, you can set it to null, by adding employmentEnd: null followed by employmentEndUpdated: true")
     public ResponseEntity<TeacherDTO> patchTeacher(@PathVariable int id, @RequestBody TeacherPatchDTO teacherDTO){
         return ResponseEntity.of(teacherService.patchTeacher(id, teacherDTO));
     }

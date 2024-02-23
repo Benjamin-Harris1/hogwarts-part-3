@@ -1,5 +1,6 @@
 package studentadmin.models;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -14,9 +15,11 @@ public class Course {
     private boolean current;
 
     @ManyToOne
+    @Schema(example = "null")
     private Teacher teacher;
 
     @ManyToMany
+    @Schema(example = "[]")
     private List<Student> students;
 
     public Course(String subject, int schoolYear, boolean current, Teacher teacher, List<Student> students) {
