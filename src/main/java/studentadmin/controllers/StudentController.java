@@ -4,9 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import studentadmin.DTO.StudentPatchRequest;
-import studentadmin.DTO.StudentRequestDTO;
-import studentadmin.DTO.StudentResponseDTO;
+import studentadmin.DTO.StudentDTO.StudentPatchRequest;
+import studentadmin.DTO.StudentDTO.StudentRequestDTO;
+import studentadmin.DTO.StudentDTO.StudentResponseDTO;
 import studentadmin.services.StudentService;
 
 import java.util.List;

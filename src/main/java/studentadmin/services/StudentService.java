@@ -2,9 +2,9 @@ package studentadmin.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import studentadmin.DTO.StudentPatchRequest;
-import studentadmin.DTO.StudentRequestDTO;
-import studentadmin.DTO.StudentResponseDTO;
+import studentadmin.DTO.StudentDTO.StudentPatchRequest;
+import studentadmin.DTO.StudentDTO.StudentRequestDTO;
+import studentadmin.DTO.StudentDTO.StudentResponseDTO;
 import studentadmin.models.House;
 import studentadmin.models.Student;
 import studentadmin.repositories.HouseRepository;
@@ -41,6 +41,7 @@ public class StudentService {
         return studentRepository.findById(id).map(this::toDTO);
     }
 
+    // Update this to use Mapper
     public Optional<StudentResponseDTO> createStudent(StudentRequestDTO studentDTO){
         Optional<House> house = houseRepository.findByName(studentDTO.getHouse());
         if (!house.isPresent()) {

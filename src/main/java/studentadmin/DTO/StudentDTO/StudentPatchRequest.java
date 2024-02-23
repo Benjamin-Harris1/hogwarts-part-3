@@ -1,4 +1,4 @@
-package studentadmin.DTO;
+package studentadmin.DTO.StudentDTO;
 
 public class StudentPatchRequest {
     private Boolean graduated;
