@@ -41,6 +41,10 @@ public class StudentService {
         return studentRepository.findById(id).map(this::toDTO);
     }
 
+    public Optional<Student> findStudentById(int id) {
+        return studentRepository.findById(id);
+    }
+    
     // Update this to use Mapper
     public Optional<StudentResponseDTO> createStudent(StudentRequestDTO studentDTO){
         Optional<House> house = houseRepository.findByName(studentDTO.getHouse());
