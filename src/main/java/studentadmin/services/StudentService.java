@@ -3,7 +3,8 @@ package studentadmin.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import studentadmin.DTO.PatchStudentDTO;
-import studentadmin.DTO.StudentDTO;
+import studentadmin.DTO.StudentRequestDTO;
+import studentadmin.DTO.StudentResponseDTO;
 import studentadmin.models.House;
 import studentadmin.models.Student;
 import studentadmin.repositories.HouseRepository;
@@ -32,19 +33,19 @@ public class StudentService {
         return studentRepository.findByNameContaining(name);
     }
 
-    public List<StudentDTO> findAll() {
+    public List<StudentResponseDTO> findAll() {
         return studentRepository.findAll().stream().map(this::toDTO).toList();
     }
 
-    public Optional<StudentDTO> findById(int id) {
+    public Optional<StudentResponseDTO> findById(int id) {
         return studentRepository.findById(id).map(this::toDTO);
     }
 
-    public Student save(Student student) {
-        return studentRepository.save(student);
+    public StudentResponseDTO save(Student student) {
+        return toDTO(studentRepository.save(toEntity(student)));
     }
 
-    public Optional<Student> createStudent(StudentDTO studentDTO){
+    public Optional<Student> createStudent(StudentRequestDTO studentDTO){
         Optional<House> house = houseRepository.findByName(studentDTO.getHouse());
         if (!house.isPresent()) {
             return Optional.empty();
@@ -64,13 +65,15 @@ public class StudentService {
 
     }
 
-    public Optional<Student> update(int id, Student student) {
+    public Optional<StudentResponseDTO> update(int id, Student student) {
         Optional<Student> studentOptional = studentRepository.findById(id);
         if (studentOptional.isPresent()) {
             student.setId(id);
             studentRepository.save(student);
+            return Optional.of(toDTO(student));
+        } else {
+            return Optional.empty();
         }
-        return studentOptional;
     }
 
     public Optional<Student> patchStudent(int id, PatchStudentDTO studentDTO){
@@ -100,15 +103,16 @@ public class StudentService {
     }
     }
 
-    public Optional<Student> deleteById(int id) {
-        Optional<Student> student = studentRepository.findById(id);
+    public Optional<StudentResponseDTO> deleteById(int id) {
+        Optional<StudentResponseDTO> student = this.findById(id);
         studentRepository.deleteById(id);
         return student;
     }
 
 
-    public StudentDTO toDTO(Student entity){
-        StudentDTO dto = new StudentDTO();
+    public StudentResponseDTO toDTO(Student entity){
+        StudentResponseDTO dto = new StudentResponseDTO();
+        dto.setId(entity.getId());
         dto.setFirstName(entity.getFirstName());
         dto.setMiddleName(entity.getMiddleName());
         dto.setLastName(entity.getLastName());
@@ -120,5 +124,23 @@ public class StudentService {
         dto.setGraduated(entity.isGraduated());
         dto.setSchoolYear(entity.getSchoolYear());
         return dto;
+    }
+
+    private Student toEntity(Student studentDTO) {
+        Student entity = new Student();
+        entity.setId(studentDTO.getId());
+        entity.setFirstName(studentDTO.getFirstName());
+        entity.setMiddleName(studentDTO.getMiddleName());
+        entity.setLastName(studentDTO.getLastName());
+        entity.setDateOfBirth(studentDTO.getDateOfBirth());
+        entity.setPrefect(studentDTO.isPrefect());
+        entity.setEnrollmentYear(studentDTO.getEnrollmentYear());
+        entity.setGraduationYear(studentDTO.getGraduationYear());
+        entity.setGraduated(studentDTO.isGraduated());
+        entity.setSchoolYear(studentDTO.getSchoolYear());
+
+        Optional<House> house = houseRepository.findByName(studentDTO.getHouse().getName());
+        house.ifPresent(entity::setHouse);
+        return entity;
     }
 }
