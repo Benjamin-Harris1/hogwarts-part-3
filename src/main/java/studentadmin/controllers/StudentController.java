@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import studentadmin.DTO.PatchStudentDTO;
+import studentadmin.DTO.StudentPatchRequest;
 import studentadmin.DTO.StudentRequestDTO;
 import studentadmin.DTO.StudentResponseDTO;
 import studentadmin.models.Student;
@@ -41,19 +41,19 @@ public class StudentController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Student> createStudent(@RequestBody StudentRequestDTO studentDTO){
-        Optional<Student> student = studentService.createStudent(studentDTO);
+    public ResponseEntity<StudentResponseDTO> createStudent(@RequestBody StudentRequestDTO studentDTO){
+        Optional<StudentResponseDTO> student = studentService.createStudent(studentDTO);
         return student.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<StudentResponseDTO> updateStudent(@PathVariable int id, @RequestBody Student student){
-        return ResponseEntity.of(studentService.update(id, student));
+    public ResponseEntity<StudentResponseDTO> updateStudent(@PathVariable int id, @RequestBody StudentRequestDTO studentDTO){
+        return ResponseEntity.of(studentService.update(id, studentDTO));
     }
 
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Student> patchStudent(@PathVariable int id, @RequestBody PatchStudentDTO studentDTO){
+    public ResponseEntity<StudentResponseDTO> patchStudent(@PathVariable int id, @RequestBody StudentPatchRequest studentDTO){
         return ResponseEntity.of(studentService.patchStudent(id, studentDTO));
         } 
 

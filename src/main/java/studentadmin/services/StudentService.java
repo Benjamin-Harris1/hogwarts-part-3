@@ -1,8 +1,9 @@
 package studentadmin.services;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import studentadmin.DTO.PatchStudentDTO;
+import studentadmin.DTO.StudentPatchRequest;
 import studentadmin.DTO.StudentRequestDTO;
 import studentadmin.DTO.StudentResponseDTO;
 import studentadmin.models.House;
@@ -41,11 +42,7 @@ public class StudentService {
         return studentRepository.findById(id).map(this::toDTO);
     }
 
-    public StudentResponseDTO save(Student student) {
-        return toDTO(studentRepository.save(toEntity(student)));
-    }
-
-    public Optional<Student> createStudent(StudentRequestDTO studentDTO){
+    public Optional<StudentResponseDTO> createStudent(StudentRequestDTO studentDTO){
         Optional<House> house = houseRepository.findByName(studentDTO.getHouse());
         if (!house.isPresent()) {
             return Optional.empty();
@@ -61,22 +58,46 @@ public class StudentService {
         student.setGraduationYear(studentDTO.getGraduationYear());
         student.setGraduated(studentDTO.isGraduated());
         student.setSchoolYear(studentDTO.getSchoolYear());
-        return Optional.of(studentRepository.save(student));
+
+        Student savedStudent = studentRepository.save(student);
+
+        return Optional.of(toDTO(savedStudent));
 
     }
 
-    public Optional<StudentResponseDTO> update(int id, Student student) {
+    public Optional<StudentResponseDTO> update(int id, StudentRequestDTO studentDTO) {
         Optional<Student> studentOptional = studentRepository.findById(id);
-        if (studentOptional.isPresent()) {
-            student.setId(id);
-            studentRepository.save(student);
-            return Optional.of(toDTO(student));
-        } else {
+        if (!studentOptional.isPresent()) {
             return Optional.empty();
         }
+        Student student = studentOptional.get();
+
+        // Find hus baseret på navn fra DTO
+        if (studentDTO.getHouse() != null){
+            Optional<House> houseOptional = houseRepository.findByName(studentDTO.getHouse());
+            if (!houseOptional.isPresent()){
+                return Optional.empty();
+            }
+            student.setHouse(houseOptional.get());
+        } else {
+            student.setHouse(null);
+        }
+        student.setFirstName(studentDTO.getFirstName());
+        student.setMiddleName(studentDTO.getMiddleName());
+        student.setLastName(studentDTO.getLastName());
+        student.setDateOfBirth(studentDTO.getDateOfBirth());
+        student.setPrefect(studentDTO.isPrefect());
+        student.setEnrollmentYear(studentDTO.getEnrollmentYear());
+        student.setGraduationYear(studentDTO.getGraduationYear());
+        student.setGraduated(studentDTO.isGraduated());
+        student.setSchoolYear(studentDTO.getSchoolYear());
+    
+        Student updatedStudent = studentRepository.save(student);
+    
+        return Optional.of(toDTO(updatedStudent));
     }
 
-    public Optional<Student> patchStudent(int id, PatchStudentDTO studentDTO){
+    public Optional<StudentResponseDTO> patchStudent(int id, StudentPatchRequest studentDTO){
         Optional<Student> original = studentRepository.findById(id);
         if (!original.isPresent()) {
             return Optional.empty();
@@ -96,7 +117,10 @@ public class StudentService {
                 student.setGraduated(true);
             }
 
-           return Optional.of(studentRepository.save(student)); 
+            Student savedStudent = studentRepository.save(student);
+
+            // Konverter entity tilbage til DTO
+           return Optional.of(toDTO(savedStudent)); 
         } catch(IllegalAccessException e) {
             e.printStackTrace();
             return Optional.empty();
