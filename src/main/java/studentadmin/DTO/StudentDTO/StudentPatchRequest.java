@@ -1,6 +1,6 @@
-package studentadmin.DTO;
+package studentadmin.DTO.StudentDTO;
 
-public class PatchStudentDTO {
+public class StudentPatchRequest {
     private Boolean graduated;
     private Integer graduationYear;
     private Boolean prefect;

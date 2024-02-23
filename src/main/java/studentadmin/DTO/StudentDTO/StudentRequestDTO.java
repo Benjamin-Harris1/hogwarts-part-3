@@ -1,10 +1,12 @@
-package studentadmin.DTO;
+package studentadmin.DTO.StudentDTO;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 
-public class StudentDTO {
-    private String fullName;
+import com.fasterxml.jackson.annotation.JsonSetter;
+
+public class StudentRequestDTO {
+    private int id;
     private String firstName;
     private String middleName;
     private String lastName;
@@ -16,24 +18,28 @@ public class StudentDTO {
     private boolean graduated;
     private int schoolYear;
 
-
-    public String getFullName() {
-        return fullName;
+    public int getId() {
+        return id;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+
+      @JsonSetter("name")
+    public void setName(String fullName) {
         // split("\\s+"") opdeler streng ved 1 eller flere mellemrum
         String[] parts = fullName.trim().split("\\s+");
         this.firstName = parts[0];
         this.lastName = parts[parts.length - 1];
         if (parts.length > 2) {
-            // laver nyt array med evt flere mellemnavne og joiner det med firstname + lastname
-            this.middleName = String.join(" ", Arrays.copyOfRange(parts, 1, parts.length -1));
+            this.middleName = String.join(" ", Arrays.copyOfRange(parts, 1, parts.length - 1));
         } else {
             this.middleName = "";
         }
     }
+
 
     public String getFirstName() {
         return firstName;

@@ -4,13 +4,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import studentadmin.DTO.PatchStudentDTO;
-import studentadmin.DTO.StudentDTO;
-import studentadmin.models.House;
-import studentadmin.models.Student;
-import studentadmin.repositories.HouseRepository;
-import studentadmin.repositories.StudentRepository;
-import studentadmin.utils.Patcher;
+import studentadmin.DTO.StudentDTO.StudentPatchRequest;
+import studentadmin.DTO.StudentDTO.StudentRequestDTO;
+import studentadmin.DTO.StudentDTO.StudentResponseDTO;
+import studentadmin.services.StudentService;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,122 +18,47 @@ import java.util.Optional;
 @RequestMapping("/students")
 public class StudentController {
 
-    private final Patcher patcher;
-    private final StudentRepository studentRepository;
-    private final HouseRepository houseRepository;
+    private final StudentService studentService;
 
 
-    public StudentController(Patcher patcher, StudentRepository studentRepository, HouseRepository houseRepository) {
-        this.patcher = patcher;
-        this.studentRepository = studentRepository;
-        this.houseRepository = houseRepository;
+    public StudentController(StudentService studentService) {
+        this.studentService = studentService;
+
     }
 
     @GetMapping
-    public List<Student> getAllStudents(){
-        List<Student> students = studentRepository.findAll();
+    public List<StudentResponseDTO> getAllStudents(){
+        List<StudentResponseDTO> students = studentService.findAll();
         return students;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Student> getStudent(@PathVariable int id){
-        Optional<Student> student = studentRepository.findById(id);
+    public ResponseEntity<StudentResponseDTO> getStudent(@PathVariable int id){
+        Optional<StudentResponseDTO> student = studentService.findById(id);
         return ResponseEntity.of(student);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Student> createStudent(@RequestBody StudentDTO studentDTO){
-        Optional<House> house = houseRepository.findByName(studentDTO.getHouse());
-        // Hvis house med angivne navn ikke findes, returneres 404 not found
-        if (!house.isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        // Tjekker om fullname er angivet og opdeler hvis ja
-        if (studentDTO.getFullName() != null) {
-            studentDTO.setFullName(studentDTO.getFullName());
-        }
-
-        Student student = new Student();
-        student.setFirstName(studentDTO.getFirstName());
-        student.setMiddleName(studentDTO.getMiddleName());
-        student.setLastName(studentDTO.getLastName());
-        student.setDateOfBirth(studentDTO.getDateOfBirth());
-        student.setHouse(house.get());
-        student.setPrefect(studentDTO.isPrefect());
-        student.setEnrollmentYear(studentDTO.getEnrollmentYear());
-        student.setGraduationYear(studentDTO.getGraduationYear());
-        student.setGraduated(studentDTO.isGraduated());
-        student.setSchoolYear(studentDTO.getSchoolYear());
-
-        Student savedStudent = studentRepository.save(student);
-        return ResponseEntity.ok().body(savedStudent);
+    public ResponseEntity<StudentResponseDTO> createStudent(@RequestBody StudentRequestDTO studentDTO){
+        Optional<StudentResponseDTO> student = studentService.createStudent(studentDTO);
+        return student.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Student> updateStudent(@PathVariable int id, @RequestBody Student student){
-        Optional<Student> original = studentRepository.findById(id);
-        if (original.isPresent()) {
-            Student originalStudent = original.get();
-            // Opdatér student
-            originalStudent.setFirstName(student.getFirstName());
-            originalStudent.setMiddleName(student.getMiddleName());
-            originalStudent.setLastName(student.getLastName());
-            originalStudent.setDateOfBirth(student.getDateOfBirth());
-            originalStudent.setHouse(student.getHouse());
-            originalStudent.setEnrollmentYear(student.getEnrollmentYear());
-            originalStudent.setGraduationYear(student.getGraduationYear());
-            originalStudent.setPrefect(student.isPrefect());
-            originalStudent.setGraduated(student.isGraduated());
-            originalStudent.setSchoolYear(student.getSchoolYear());
-
-            // Gem og returner opdaterede student
-            Student updatedStudent = studentRepository.save(originalStudent);
-            return ResponseEntity.ok().body(updatedStudent);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<StudentResponseDTO> updateStudent(@PathVariable int id, @RequestBody StudentRequestDTO studentDTO){
+        return ResponseEntity.of(studentService.update(id, studentDTO));
     }
 
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Student> patchStudent(@PathVariable int id, @RequestBody PatchStudentDTO studentDTO){
-        Optional<Student> original = studentRepository.findById(id);
-        if (!original.isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
-            Student student = original.get();
-            
-            try {
-                // Send both obhect to the patcher 
-                patcher.patchObject(student, studentDTO);
-
-                // Tjekker om graduationYear er sat til null med vilje
-                if (studentDTO.getGraduationYear() == null && studentDTO.isGraduationYearUpdated()) {
-                    student.setGraduationYear(null);
-                    student.setGraduated(false);
-                }
-
-
-                // Tjekker om graduationYear er sat, og sætter graduated til true
-                if (studentDTO.getGraduationYear() != null) {
-                    student.setGraduated(true);
-                }
-                // Save updated existing student
-                studentRepository.save(student);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-            }
-            return ResponseEntity.ok().body(student);
+    public ResponseEntity<StudentResponseDTO> patchStudent(@PathVariable int id, @RequestBody StudentPatchRequest studentDTO){
+        return ResponseEntity.of(studentService.patchStudent(id, studentDTO));
         } 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Student> deleteStudent(@PathVariable int id){
-        Optional<Student> student = studentRepository.findById(id);
-        studentRepository.deleteById(id);
-        return ResponseEntity.of(student);
+    public ResponseEntity<StudentResponseDTO> deleteStudent(@PathVariable int id){
+        return ResponseEntity.of(studentService.deleteById(id));
     }
 
 }

@@ -1,10 +1,10 @@
-package studentadmin.DTO;
+package studentadmin.DTO.TeacherDTO;
 
 import studentadmin.models.EmpType;
 
 import java.time.LocalDate;
 
-public class PatchTeacherDTO {
+public class TeacherPatchDTO {
     private Boolean headOfHouse;
     private LocalDate employmentEnd;
     private EmpType employment;

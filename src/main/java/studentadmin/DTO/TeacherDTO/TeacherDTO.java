@@ -1,10 +1,11 @@
-package studentadmin.DTO;
+package studentadmin.DTO.TeacherDTO;
 
 import studentadmin.models.EmpType;
 
 import java.time.LocalDate;
 
 public class TeacherDTO {
+    private int id;
     private String firstName;
     private String middleName;
     private String lastName;
@@ -14,6 +15,14 @@ public class TeacherDTO {
     private EmpType employment;
     private LocalDate employmentStart;
     private LocalDate employmentEnd;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getFirstName() {
         return firstName;
