@@ -1,6 +1,5 @@
 package studentadmin.services;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import studentadmin.DTO.StudentPatchRequest;
@@ -72,25 +71,8 @@ public class StudentService {
         }
         Student student = studentOptional.get();
 
-        // Find hus baseret på navn fra DTO
-        if (studentDTO.getHouse() != null){
-            Optional<House> houseOptional = houseRepository.findByName(studentDTO.getHouse());
-            if (!houseOptional.isPresent()){
-                return Optional.empty();
-            }
-            student.setHouse(houseOptional.get());
-        } else {
-            student.setHouse(null);
-        }
-        student.setFirstName(studentDTO.getFirstName());
-        student.setMiddleName(studentDTO.getMiddleName());
-        student.setLastName(studentDTO.getLastName());
-        student.setDateOfBirth(studentDTO.getDateOfBirth());
-        student.setPrefect(studentDTO.isPrefect());
-        student.setEnrollmentYear(studentDTO.getEnrollmentYear());
-        student.setGraduationYear(studentDTO.getGraduationYear());
-        student.setGraduated(studentDTO.isGraduated());
-        student.setSchoolYear(studentDTO.getSchoolYear());
+        // Opdater den eksisterende student entitet med værdier fra DTO
+        student = toEntity(studentDTO, student);
     
         Student updatedStudent = studentRepository.save(student);
     
@@ -150,21 +132,20 @@ public class StudentService {
         return dto;
     }
 
-    private Student toEntity(Student studentDTO) {
-        Student entity = new Student();
-        entity.setId(studentDTO.getId());
-        entity.setFirstName(studentDTO.getFirstName());
-        entity.setMiddleName(studentDTO.getMiddleName());
-        entity.setLastName(studentDTO.getLastName());
-        entity.setDateOfBirth(studentDTO.getDateOfBirth());
-        entity.setPrefect(studentDTO.isPrefect());
-        entity.setEnrollmentYear(studentDTO.getEnrollmentYear());
-        entity.setGraduationYear(studentDTO.getGraduationYear());
-        entity.setGraduated(studentDTO.isGraduated());
-        entity.setSchoolYear(studentDTO.getSchoolYear());
-
-        Optional<House> house = houseRepository.findByName(studentDTO.getHouse().getName());
-        house.ifPresent(entity::setHouse);
-        return entity;
+    private Student toEntity(StudentRequestDTO studentDTO, Student student) {
+        if (studentDTO.getHouse() != null) {
+            Optional<House> house = houseRepository.findByName(studentDTO.getHouse());
+            house.ifPresent(student::setHouse);
+        }
+        student.setFirstName(studentDTO.getFirstName());
+        student.setMiddleName(studentDTO.getMiddleName());
+        student.setLastName(studentDTO.getLastName());
+        student.setDateOfBirth(studentDTO.getDateOfBirth());
+        student.setPrefect(studentDTO.isPrefect());
+        student.setEnrollmentYear(studentDTO.getEnrollmentYear());
+        student.setGraduationYear(studentDTO.getGraduationYear());
+        student.setGraduated(studentDTO.isGraduated());
+        student.setSchoolYear(studentDTO.getSchoolYear());
+        return student;
     }
 }

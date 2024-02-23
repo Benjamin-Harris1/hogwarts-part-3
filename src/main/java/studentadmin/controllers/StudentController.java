@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import studentadmin.DTO.StudentPatchRequest;
 import studentadmin.DTO.StudentRequestDTO;
 import studentadmin.DTO.StudentResponseDTO;
-import studentadmin.models.Student;
 import studentadmin.services.StudentService;
 
 import java.util.List;
