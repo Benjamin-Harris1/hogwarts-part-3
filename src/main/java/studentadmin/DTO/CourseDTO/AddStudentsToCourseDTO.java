@@ -1,4 +1,4 @@
-package studentadmin.DTO;
+package studentadmin.DTO.CourseDTO;
 
 import java.util.List;
 

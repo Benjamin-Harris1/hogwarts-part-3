@@ -4,8 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import studentadmin.DTO.AddStudentsToCourseDTO;
-import studentadmin.DTO.UpdateCourseTeacherDTO;
+import studentadmin.DTO.CourseDTO.AddStudentsToCourseDTO;
+import studentadmin.DTO.CourseDTO.UpdateCourseTeacherDTO;
 import studentadmin.models.Course;
 import studentadmin.models.Student;
 import studentadmin.models.Teacher;
